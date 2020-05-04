@@ -20,6 +20,7 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 class GraalVmHome {
 
@@ -41,6 +42,16 @@ class GraalVmHome {
                 graalVmHome.resolve("bin/native-image"),
                 graalVmHome.resolve("bin/native-image.cmd")
         );
+    }
+
+    Path gu() {
+        return Stream.of("bin/gu", "bin/gu.cmd")
+                .map(graalVmHome::resolve)
+                .filter(Files::exists)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(
+                        String.format("gu/gu.cmd not found in graalVmHome=[%s]", graalVmHome.toString())))
+                ;
     }
 
     @Override

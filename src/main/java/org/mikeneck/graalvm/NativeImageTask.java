@@ -55,6 +55,7 @@ public class NativeImageTask extends DefaultTask {
 
     private Path nativeImageCommand() {
         GraalVmHome graalVmHome = graalVmHome();
+        installNativeImage();
         Optional<Path> nativeImage = graalVmHome.nativeImage();
         if (!nativeImage.isPresent()) {
             getLogger().warn("native-image not found in graalVmHome({})", graalVmHome);
@@ -65,6 +66,18 @@ public class NativeImageTask extends DefaultTask {
 
     private GraalVmHome graalVmHome() {
         return extension.get().graalVmHome();
+    }
+
+    private void installNativeImage() {
+        if (!extension.get().installNativeImage()) {
+            return;
+        }
+
+        getProject().exec(execSpec -> {
+            getLogger().info("install native-image binary");
+            execSpec.setExecutable(graalVmHome().gu());
+            execSpec.args("install", "native-image");
+        });
     }
 
     private File outputDirectory() {

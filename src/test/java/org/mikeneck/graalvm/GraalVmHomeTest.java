@@ -22,8 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class GraalVmHomeTest {
 
@@ -32,12 +31,15 @@ public class GraalVmHomeTest {
         Path graalVmHome = Files.createTempDirectory("test-on_nixLikeOs");
         Path binDirectory = Files.createDirectory(graalVmHome.resolve("bin"));
         Files.createFile(binDirectory.resolve("native-image"));
+        Files.createFile(binDirectory.resolve("gu"));
 
         GraalVmHome home = new GraalVmHome(graalVmHome);
 
         Optional<Path> nativeImage = home.nativeImage();
 
         assertTrue(nativeImage.isPresent());
+
+        assertTrue(home.gu().toFile().exists());
     }
 
     @Test
@@ -45,12 +47,15 @@ public class GraalVmHomeTest {
         Path graalVmHome = Files.createTempDirectory("test-onWindows");
         Path binDirectory = Files.createDirectory(graalVmHome.resolve("bin"));
         Files.createFile(binDirectory.resolve("native-image.cmd"));
+        Files.createFile(binDirectory.resolve("gu.cmd"));
 
         GraalVmHome home = new GraalVmHome(graalVmHome);
 
         Optional<Path> nativeImage = home.nativeImage();
 
         assertTrue(nativeImage.isPresent());
+
+        assertTrue(home.gu().toFile().exists());
     }
 
     @Test
@@ -63,5 +68,11 @@ public class GraalVmHomeTest {
         Optional<Path> nativeImage = home.nativeImage();
 
         assertFalse(nativeImage.isPresent());
+
+        try {
+            home.gu();
+            fail("never fall here");
+        } catch (IllegalArgumentException ignore) {
+        }
     }
 }
