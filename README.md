@@ -13,6 +13,8 @@ You can configure options via `nativeImage {}`.
 * `mainClass` - A name of main class, required.
 * `executableName` - A name of executable, required.
 * `runtimeClasspath` - A configuration of runtime classpath.(default: `runtimeClasspath` Configuration)
+* `findGraalVmHome` - A switch of action that find GraalVm directory.(default `false`)
+* `installNativeImage` - A switch of action that install native-image component.(default `false`)
 
 And you can configure arguments to be passed to GraalVM via `arguments(String...)` method.
 
